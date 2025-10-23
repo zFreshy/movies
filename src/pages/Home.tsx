@@ -8,12 +8,15 @@ import FilterCarousel from '@/components/FilterCarousel'
 import ThumbCarousel from '@/components/ThumbCarousel'
 import MovieGrid from '@/components/MovieGrid'
 import { useFavorites } from '@/store/favorites'
+import Hero from '@/components/Hero'
+import SideRail from '@/components/SideRail'
+import RightPanel from '@/components/RightPanel'
 
 export default function Home() {
-  const [q, setQ] = useState('')
+  const [q] = useState('')
   const [catalog, setCatalog] = useState(fallback)
   const [trend, setTrend] = useState(fallback.filter(m => m.trending))
-  const [active, setActive] = useState('Animation')
+  const [active] = useState('Animation')
   const { items } = useFavorites()
   const favMovies = useMemo(() => items.map(i => ({
     id: i.movieId,
@@ -57,24 +60,21 @@ export default function Home() {
   const featured = trend.slice(0, 2)
 
   return (
-    <div className={cn('space-y-10')}>      
-      {featured.length === 2 && <HeroSplit movies={featured} />}
-      <div className={cn('relative')}>        
-        <input value={q} onChange={e => setQ(e.target.value)} placeholder={'Buscar filmes, gêneros...'} className={cn('w-full rounded-full border border-white/10 bg-card px-10 py-3 text-sm shadow-soft outline-none ring-0 placeholder:text-muted focus:border-primary')} />
-        <Search className={cn('pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted')} />
-      </div>
-      <FilterCarousel value={active} onChange={setActive} />
-      <ThumbCarousel movies={trend} title={`Trending in ${active}`} />
-      {items.length > 0 && (
-        <section className={cn('space-y-3')}>        
-          <h2 className={cn('text-lg font-semibold tracking-tight')}>Favoritos</h2>
-          <MovieGrid movies={favMovies} />
+    <div>
+      <div className={cn('grid gap-4 lg:grid-cols-[56px_minmax(0,1fr)_320px]')}>    
+        <div className={cn('lg:row-span-2')}><SideRail /></div>
+        <div className={cn('space-y-10')}>      
+          {featured.length === 2 && null}
+          <h2 className={cn('text-lg font-semibold tracking-tight')}>Developer's Choose</h2>
+          {(trend[0] || catalog[0]) && <Hero movie={(trend[0] || catalog[0])} />}
+          <ThumbCarousel movies={trend} title={`Trending in ${active}`} />
+        </div>
+        <RightPanel movies={favMovies} />
+        <section className={cn('space-y-3 lg:col-span-2 lg:col-start-2 lg:row-start-2')}>        
+          <h2 className={cn('text-lg font-semibold tracking-tight')}>Catálogo</h2>
+          <MovieGrid movies={catalog} />
         </section>
-      )}
-      <section className={cn('space-y-3')}>        
-        <h2 className={cn('text-lg font-semibold tracking-tight')}>Catálogo</h2>
-        <MovieGrid movies={catalog} />
-      </section>
+      </div>
     </div>
   )
 }
