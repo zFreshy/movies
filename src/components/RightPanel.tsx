@@ -36,7 +36,7 @@ export default function RightPanel({ movies }: Props) {
               <img src={m.posterUrl} alt={m.title} className={cn('h-12 w-9 rounded-md object-cover')} />
               <div className={cn('min-w-0 flex-1')}>                
                 <div className={cn('truncate text-sm font-medium')}>{m.title}</div>
-                <div className={cn('text-xs text-muted')}>Favorito</div>
+                <div className={cn('text-xs text-muted')}>Favorite</div>
               </div>
               <button className={cn('inline-flex h-8 w-8 items-center justify-center rounded-full bg-white/10 ring-1 ring-white/10 hover:bg-white/15')}>                
                 <Play className={cn('h-4 w-4')} />

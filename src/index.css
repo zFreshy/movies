@@ -11,7 +11,7 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  --bg: #0e2136;
+  --bg: #0a0f1c;
   --card: #0a0f1c;
   --text: #e6e9f2;
   --muted: #9aa0af;
@@ -45,6 +45,15 @@ body {
 }
 
 * { scrollbar-width: thin; }
+
+.scrollbar-none { scrollbar-width: none; }
+.scrollbar-none::-webkit-scrollbar { display: none; }
+
+.mask-fade-x {
+  --mask-edge: 96px;
+  mask-image: linear-gradient(to right, transparent, #000 var(--mask-edge), #000 calc(100% - var(--mask-edge)), transparent);
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 var(--mask-edge), #000 calc(100% - var(--mask-edge)), transparent);
+}
 
 ::-webkit-scrollbar { width: 8px; height: 8px; }
 ::-webkit-scrollbar-track { background: transparent; }

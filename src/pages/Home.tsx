@@ -1,10 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
-import { Search } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { movies as fallback } from '@/data/movies'
 import { fetchTrending, searchMovies } from '@/lib/tmdb'
-import HeroSplit from '@/components/HeroSplit'
-import FilterCarousel from '@/components/FilterCarousel'
 import ThumbCarousel from '@/components/ThumbCarousel'
 import MovieGrid from '@/components/MovieGrid'
 import { useFavorites } from '@/store/favorites'
@@ -65,13 +62,13 @@ export default function Home() {
         <div className={cn('lg:row-span-2')}><SideRail /></div>
         <div className={cn('space-y-10')}>      
           {featured.length === 2 && null}
-          <h2 className={cn('text-lg font-semibold tracking-tight')}>Developer's Choose</h2>
+          <h2 className={cn('text-lg font-semibold tracking-tight')}>Developer's Choice</h2>
           {(trend[0] || catalog[0]) && <Hero movie={(trend[0] || catalog[0])} />}
-          <ThumbCarousel movies={trend} title={`Trending in ${active}`} />
+          <ThumbCarousel movies={trend} title={'Trending'} />
         </div>
         <RightPanel movies={favMovies} />
         <section className={cn('space-y-3 lg:col-span-2 lg:col-start-2 lg:row-start-2')}>        
-          <h2 className={cn('text-lg font-semibold tracking-tight')}>Catálogo</h2>
+          <h2 className={cn('text-lg font-semibold tracking-tight')}>Catalog</h2>
           <MovieGrid movies={catalog} />
         </section>
       </div>

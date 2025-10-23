@@ -19,11 +19,11 @@ export default function Hero({ movie }: Props) {
         <div className={cn('mt-6 flex gap-3')}>          
           <button className={cn('inline-flex items-center gap-2 rounded-full bg-primary px-4 py-2 text-sm text-white shadow-glow transition hover:brightness-110')}>            
             <Play className={cn('h-4 w-4')} />
-            <span>Assistir agora</span>
+            <span>Watch Now</span>
           </button>
           <Link to={`/movie/${movie.id}`} className={cn('inline-flex items-center gap-2 rounded-full border border-white/10 bg-background px-4 py-2 text-sm shadow-soft transition hover:bg-white/5')}>            
             <Info className={cn('h-4 w-4')} />
-            <span>Detalhes</span>
+            <span>Details</span>
           </Link>
         </div>
       </motion.div>

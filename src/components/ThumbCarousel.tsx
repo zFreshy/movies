@@ -1,4 +1,4 @@
-import { useRef } from 'react'
+import { useEffect, useMemo, useRef } from 'react'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import type { Movie } from '@/types/movie'
@@ -8,26 +8,45 @@ type Props = { movies: Movie[]; title: string }
 
 export default function ThumbCarousel({ movies, title }: Props) {
   const ref = useRef<HTMLDivElement>(null)
+
+  const list = useMemo(() => {
+    if (!movies?.length) return []
+    return [...movies, ...movies, ...movies]
+  }, [movies])
+
+  useEffect(() => {
+    const el = ref.current
+    if (!el || !list.length) return
+    const unit = el.scrollWidth / 3
+    el.scrollLeft = unit
+    const onScroll = () => {
+      const u = el.scrollWidth / 3
+      if (el.scrollLeft <= u * 0.2) el.scrollLeft += u
+      else if (el.scrollLeft >= u * 2.8) el.scrollLeft -= u
+    }
+    el.addEventListener('scroll', onScroll, { passive: true })
+    return () => el.removeEventListener('scroll', onScroll)
+  }, [list.length])
+
   const scroll = (delta: number) => ref.current?.scrollBy({ left: delta, behavior: 'smooth' })
+
   return (
     <section className={cn('space-y-3')}>      
-      <div className={cn('flex items-center justify-between')}>        
-        <h2 className={cn('text-xl md:text-2xl font-semibold tracking-tight')}>{title}</h2>
-        <div className={cn('flex gap-2')}>          
-          <button onClick={() => scroll(-400)} className={cn('h-8 w-8 rounded-full border border-white/10 bg-card text-foreground hover:bg-white/5')}>            
-            <ChevronLeft className={cn('h-4 w-4')} />
-          </button>
-          <button onClick={() => scroll(400)} className={cn('h-8 w-8 rounded-full border border-white/10 bg-card text-foreground hover:bg-white/5')}>            
-            <ChevronRight className={cn('h-4 w-4')} />
-          </button>
+      <h2 className={cn('text-xl md:text-2xl font-semibold tracking-tight')}>{title}</h2>
+      <div className={cn('relative')}>        
+        <div ref={ref} className={cn('flex gap-4 overflow-x-auto snap-x snap-mandatory scrollbar-none mask-fade-x')}>          
+          {list.map((m, idx) => (
+            <div key={`${m.id}-${idx}`} className={cn('w-44 shrink-0 snap-start')}>              
+              <ThumbCard movie={m} />
+            </div>
+          ))}
         </div>
-      </div>
-      <div ref={ref} className={cn('flex gap-4 overflow-x-auto pb-2 snap-x snap-mandatory')}>        
-        {movies.map(m => (
-          <div key={m.id} className={cn('w-44 shrink-0 snap-start')}>            
-            <ThumbCard movie={m} />
-          </div>
-        ))}
+        <button aria-label={'Previous'} onClick={() => scroll(-400)} className={cn('absolute left-1 top-1/2 -translate-y-1/2 z-30 inline-flex h-8 w-8 items-center justify-center rounded-full border border-white/10 bg-card text-foreground shadow-soft hover:bg-white/5')}>          
+          <ChevronLeft className={cn('h-4 w-4')} />
+        </button>
+        <button aria-label={'Next'} onClick={() => scroll(400)} className={cn('absolute right-1 top-1/2 -translate-y-1/2 z-30 inline-flex h-8 w-8 items-center justify-center rounded-full border border-white/10 bg-card text-foreground shadow-soft hover:bg-white/5')}>          
+          <ChevronRight className={cn('h-4 w-4')} />
+        </button>
       </div>
     </section>
   )
