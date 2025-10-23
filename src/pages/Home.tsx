@@ -8,9 +8,11 @@ import { useFavorites } from '@/store/favorites'
 import Hero from '@/components/Hero'
 import SideRail from '@/components/SideRail'
 import RightPanel from '@/components/RightPanel'
+import { useSearchParams } from 'react-router-dom'
 
 export default function Home() {
-  const [q] = useState('')
+  const [params] = useSearchParams()
+  const q = params.get('q') ?? ''
   const [catalog, setCatalog] = useState(fallback)
   const [trend, setTrend] = useState(fallback.filter(m => m.trending))
   const [active] = useState('Animation')
