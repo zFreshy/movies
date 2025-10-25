@@ -13,7 +13,7 @@ export default function GenreFilters({ genres, value, onChange }: Props) {
         <button
           key={g}
           onClick={() => onChange?.(g)}
-          className={cn('inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm ring-1 ring-white/10', value === g ? 'bg-white/10 text-foreground' : 'bg-card text-muted hover:bg-white/5')}
+          className={cn('inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm ring-1 ring-white/10 transition duration-200 active:scale-95', value === g ? 'bg-white/10 text-foreground' : 'bg-card text-muted hover:bg-white/5')}
         >
           <span>{g}</span>
         </button>

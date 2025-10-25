@@ -16,11 +16,11 @@ export default function Hero({ movie }: Props) {
         <img src={movie.backdropUrl} alt={movie.title} className={cn('h-full w-full object-cover')} />
         <div className={cn('absolute inset-0 bg-gradient-to-r from-background via-background/70 to-transparent')} />
       </div>
-      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} className={cn('relative z-10 p-6 md:p-10 max-w-xl')}>        
+      <motion.div initial={{ opacity: 0, y: 6 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5 }} className={cn('relative z-10 p-6 md:p-10 max-w-xl')}>        
         <h1 className={cn('text-3xl md:text-4xl font-semibold tracking-tight')}>{movie.title}</h1>
         <p className={cn('mt-2 text-sm md:text-base text-muted')}>{movie.overview}</p>
         <div className={cn('mt-6 flex gap-3')}>          
-          <button onClick={() => { toggle({ movieId: movie.id, title: movie.title, posterUrl: movie.posterUrl }); navigate(`/movie/${movie.id}`) }} className={cn('inline-flex items-center gap-2 rounded-full bg-primary px-4 py-2 text-sm text-white shadow-glow transition hover:brightness-110')}>      
+          <button onClick={() => { toggle({ movieId: movie.id, title: movie.title, posterUrl: movie.posterUrl }); navigate(`/movie/${movie.id}`) }} className={cn('inline-flex items-center gap-2 rounded-full bg-primary px-4 py-2 text-sm text-white shadow-glow transition duration-200 active:scale-95 hover:brightness-110')}>      
             <Play className={cn('h-4 w-4')} />
             <span>Watch Now</span>
           </button>
