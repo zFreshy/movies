@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useMemo, useState, useEffect } from 'react'
 import { Search, Play, HeartOff } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import type { Movie } from '@/types/movie'
@@ -14,14 +14,27 @@ export default function RightPanel({ movies, panelHeight }: Props) {
   const [active, setActive] = useState('Favorites')
   const navigate = useNavigate()
   const { toggle } = useFavorites()
+  const [maxH, setMaxH] = useState<number | undefined>(undefined)
   const list = useMemo(() => {
     const base = movies
     const s = q.trim().toLowerCase()
     return s ? base.filter(m => m.title.toLowerCase().includes(s)) : base
   }, [movies, q])
 
+  useEffect(() => {
+    const update = () => {
+      const vh = window.innerHeight
+      const cap = Math.max(0, vh - 80)
+      const value = panelHeight ? Math.min(panelHeight, cap) : cap
+      setMaxH(value)
+    }
+    update()
+    window.addEventListener('resize', update)
+    return () => window.removeEventListener('resize', update)
+  }, [panelHeight])
+
   return (
-    <aside style={panelHeight ? { height: panelHeight } : undefined} className={cn('hidden lg:block w-[320px] shrink-0')}>      
+    <aside style={maxH ? { maxHeight: maxH } : undefined} className={cn('block w-full lg:w-[320px] lg:shrink-0')}>      
       <div className={cn('h-full flex flex-col gap-3')}>        
         <div className={cn('rounded-3xl bg-background/40 ring-1 ring-white/10 backdrop-blur-xs p-3 shadow-soft')}>          
           <div className={cn('relative')}>            
