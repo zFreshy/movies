@@ -1,5 +1,5 @@
 import { useRef, useState, FormEvent } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { Search } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -15,12 +15,14 @@ export default function Header() {
   const [query, setQuery] = useState('')
   const inputRef = useRef<HTMLInputElement>(null)
   const navigate = useNavigate()
+  const location = useLocation()
   const onSubmit = (e: FormEvent) => {
     e.preventDefault()
     const s = query.trim()
     navigate(s ? `/?q=${encodeURIComponent(s)}` : '/')
     setOpen(false)
   }
+  const atForYou = location.pathname === '/for-you'
   return (
     <header className={cn('fixed top-0 left-0 right-0 z-50 bg-background/60 backdrop-blur')}>      
       <div className={cn('container flex h-16 items-center justify-between')}>        
@@ -57,6 +59,13 @@ export default function Header() {
                     {t.label}
                   </button>
                 ))}
+                <button
+                  type={'button'}
+                  onClick={() => navigate('/for-you')}
+                  className={cn('px-4 py-2 rounded-full', atForYou ? 'bg-white/15 text-foreground ring-1 ring-white/10' : 'text-muted hover:bg-white/10')}
+                >
+                  For You
+                </button>
               </>
             )}
             <button
