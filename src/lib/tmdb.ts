@@ -16,13 +16,22 @@ async function req(path: string, params: Record<string, string | number> = {}) {
   return res.json()
 }
 
+let GENRES: Record<number, string> | null = null
+async function genreMap() {
+  if (GENRES) return GENRES
+  const data = await req('/genre/movie/list')
+  GENRES = Object.fromEntries((data.genres ?? []).map((g: any) => [g.id, g.name]))
+  return GENRES
+}
+
 export async function fetchTrending() {
   const data = await req('/trending/movie/week')
+  const map = await genreMap()
   return (data.results ?? []).map((m: any) => ({
     id: String(m.id),
     title: m.title,
     year: Number((m.release_date ?? '0000').slice(0, 4)),
-    genres: [],
+    genres: ((m.genre_ids ?? []).map((id: number) => map[id]).filter(Boolean)),
     rating: Number(m.vote_average ?? 0),
     runtimeMin: 0,
     overview: m.overview ?? '',
@@ -34,11 +43,12 @@ export async function fetchTrending() {
 
 export async function searchMovies(q: string) {
   const data = await req('/search/movie', { query: q })
+  const map = await genreMap()
   return (data.results ?? []).map((m: any) => ({
     id: String(m.id),
     title: m.title,
     year: Number((m.release_date ?? '0000').slice(0, 4)),
-    genres: [],
+    genres: ((m.genre_ids ?? []).map((id: number) => map[id]).filter(Boolean)),
     rating: Number(m.vote_average ?? 0),
     runtimeMin: 0,
     overview: m.overview ?? '',

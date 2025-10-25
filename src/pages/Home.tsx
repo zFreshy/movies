@@ -9,6 +9,7 @@ import Hero from '@/components/Hero'
 import SideRail from '@/components/SideRail'
 import RightPanel from '@/components/RightPanel'
 import { useSearchParams } from 'react-router-dom'
+import GenreFilters from '@/components/GenreFilters'
 
 export default function Home() {
   const [params] = useSearchParams()
@@ -18,6 +19,7 @@ export default function Home() {
   const [trend, setTrend] = useState(fallback.filter(m => m.trending))
   const [active] = useState('Animation')
   const { items } = useFavorites()
+  const [genre, setGenre] = useState('All')
   const favMovies = useMemo(() => items.map(i => ({
     id: i.movieId,
     title: i.title,
@@ -67,6 +69,19 @@ export default function Home() {
 
   const featured = trend.slice(0, 2)
 
+  const availableGenres = useMemo(() => {
+    const s = new Set<string>()
+    catalog.forEach(m => (m.genres || []).forEach(g => s.add(g)))
+    return ['All', ...Array.from(s).sort()]
+  }, [catalog])
+
+  const shown = useMemo(() => {
+    if (genre === 'All') return catalog
+    return catalog.filter(m => (m.genres || []).includes(genre))
+  }, [catalog, genre])
+
+  
+
   return (
     <div>
       <div className={cn('grid gap-4 lg:grid-cols-[56px_minmax(0,1fr)_320px]')}>    
@@ -80,7 +95,8 @@ export default function Home() {
         <RightPanel movies={favMovies} />
         <section className={cn('space-y-3 lg:col-span-2 lg:col-start-2 lg:row-start-2')}>        
           <h2 className={cn('text-lg font-semibold tracking-tight')}>Catalog</h2>
-          <MovieGrid movies={catalog} />
+          <GenreFilters genres={availableGenres} value={genre} onChange={setGenre} />
+          <MovieGrid movies={shown} />
         </section>
       </div>
     </div>
