@@ -4,22 +4,22 @@ import { cn } from '@/lib/utils'
 import type { Movie } from '@/types/movie'
 import { useNavigate } from 'react-router-dom'
 
-type Props = { movies: Movie[] }
+type Props = { movies: Movie[], panelHeight?: number }
 
 const filters = ['Favorites']
 
-export default function RightPanel({ movies }: Props) {
+export default function RightPanel({ movies, panelHeight }: Props) {
   const [q, setQ] = useState('')
   const [active, setActive] = useState('Favorites')
   const navigate = useNavigate()
   const list = useMemo(() => {
-    const base = movies.slice(0, 10)
+    const base = movies
     const s = q.trim().toLowerCase()
     return s ? base.filter(m => m.title.toLowerCase().includes(s)) : base
   }, [movies, q])
 
   return (
-    <aside className={cn('hidden lg:block w-[320px] shrink-0 h-full')}>      
+    <aside style={panelHeight ? { height: panelHeight } : undefined} className={cn('hidden lg:block w-[320px] shrink-0')}>      
       <div className={cn('h-full flex flex-col gap-3')}>        
         <div className={cn('rounded-3xl bg-background/40 ring-1 ring-white/10 backdrop-blur-xs p-3 shadow-soft')}>          
           <div className={cn('relative')}>            

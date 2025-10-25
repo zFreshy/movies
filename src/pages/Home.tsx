@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { cn } from '@/lib/utils'
 import { movies as fallback } from '@/data/movies'
 import { fetchTrending, searchMovies } from '@/lib/tmdb'
@@ -20,6 +20,8 @@ export default function Home() {
   const [active] = useState('Animation')
   const { items } = useFavorites()
   const [genre, setGenre] = useState('All')
+  const topRef = useRef<HTMLDivElement | null>(null)
+  const [panelHeight, setPanelHeight] = useState<number>(0)
   const favMovies = useMemo(() => items.map(i => ({
     id: i.movieId,
     title: i.title,
@@ -84,11 +86,22 @@ export default function Home() {
     return catalog.filter(m => (m.genres || []).includes(genre))
   }, [catalog, genre])
 
+  useEffect(() => {
+    const measure = () => {
+      const el = topRef.current
+      if (!el) return
+      setPanelHeight(el.offsetHeight)
+    }
+    measure()
+    window.addEventListener('resize', measure)
+    return () => window.removeEventListener('resize', measure)
+  }, [trend, favMovies])
+
   return (
     <div>
       <div className={cn('grid gap-4 lg:grid-cols-[56px_minmax(0,1fr)_320px]')}>    
         <div className={cn('lg:row-span-2')}><SideRail /></div>
-        <div className={cn('space-y-10')}>      
+        <div ref={topRef} className={cn('space-y-10')}>      
           {featured.length === 2 && null}
           <section id={'discover'}>
             <h2 className={cn('text-lg font-semibold tracking-tight')}>Developer's Choice</h2>
@@ -101,7 +114,7 @@ export default function Home() {
             <ThumbCarousel movies={favMovies} title={'My List'} />
           </section>
         </div>
-        <RightPanel movies={favMovies} />
+        <RightPanel movies={favMovies} panelHeight={panelHeight} />
         <section id={'catalog'} className={cn('space-y-3 lg:col-span-2 lg:col-start-2 lg:row-start-2')}>        
           <h2 className={cn('text-lg font-semibold tracking-tight')}>Catalog</h2>
           <GenreFilters genres={availableGenres} value={genre} onChange={setGenre} />
