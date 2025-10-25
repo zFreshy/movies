@@ -1,8 +1,9 @@
 import { useMemo, useState } from 'react'
-import { Search, Play } from 'lucide-react'
+import { Search, Play, HeartOff } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import type { Movie } from '@/types/movie'
 import { useNavigate } from 'react-router-dom'
+import { useFavorites } from '@/store/favorites'
 
 type Props = { movies: Movie[], panelHeight?: number }
 
@@ -12,6 +13,7 @@ export default function RightPanel({ movies, panelHeight }: Props) {
   const [q, setQ] = useState('')
   const [active, setActive] = useState('Favorites')
   const navigate = useNavigate()
+  const { toggle } = useFavorites()
   const list = useMemo(() => {
     const base = movies
     const s = q.trim().toLowerCase()
@@ -40,9 +42,14 @@ export default function RightPanel({ movies, panelHeight }: Props) {
                 <div className={cn('truncate text-sm font-medium')}>{m.title}</div>
                 <div className={cn('text-xs text-muted')}>Favorite</div>
               </div>
-              <button onClick={() => navigate(`/movie/${m.id}`)} className={cn('inline-flex h-8 w-8 items-center justify-center rounded-full bg-white/10 ring-1 ring-white/10 hover:bg-white/15')}>                
-                <Play className={cn('h-4 w-4')} />
-              </button>
+              <div className={cn('flex items-center gap-2')}>                
+                <button onClick={() => navigate(`/movie/${m.id}`)} className={cn('inline-flex h-8 w-8 items-center justify-center rounded-full bg-white/10 ring-1 ring-white/10 hover:bg-white/15')} title={'Play'}>                
+                  <Play className={cn('h-4 w-4')} />
+                </button>
+                <button onClick={() => toggle({ movieId: m.id, title: m.title, posterUrl: m.posterUrl })} className={cn('inline-flex h-8 w-8 items-center justify-center rounded-full bg-red-500/20 ring-1 ring-white/10 hover:bg-red-500/30')} title={'Remove from favorites'}>
+                  <HeartOff className={cn('h-4 w-4')} />
+                </button>
+              </div>
             </div>
           ))}
         </div>
