@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react'
 import { Search, Play } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import type { Movie } from '@/types/movie'
+import { useNavigate } from 'react-router-dom'
 
 type Props = { movies: Movie[] }
 
@@ -10,6 +11,7 @@ const filters = ['Favorites']
 export default function RightPanel({ movies }: Props) {
   const [q, setQ] = useState('')
   const [active, setActive] = useState('Favorites')
+  const navigate = useNavigate()
   const list = useMemo(() => {
     const base = movies.slice(0, 10)
     const s = q.trim().toLowerCase()
@@ -38,7 +40,7 @@ export default function RightPanel({ movies }: Props) {
                 <div className={cn('truncate text-sm font-medium')}>{m.title}</div>
                 <div className={cn('text-xs text-muted')}>Favorite</div>
               </div>
-              <button className={cn('inline-flex h-8 w-8 items-center justify-center rounded-full bg-white/10 ring-1 ring-white/10 hover:bg-white/15')}>                
+              <button onClick={() => navigate(`/movie/${m.id}`)} className={cn('inline-flex h-8 w-8 items-center justify-center rounded-full bg-white/10 ring-1 ring-white/10 hover:bg-white/15')}>                
                 <Play className={cn('h-4 w-4')} />
               </button>
             </div>

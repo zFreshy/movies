@@ -13,6 +13,7 @@ import { useSearchParams } from 'react-router-dom'
 export default function Home() {
   const [params] = useSearchParams()
   const q = params.get('q') ?? ''
+  const view = params.get('view') ?? ''
   const [catalog, setCatalog] = useState(fallback)
   const [trend, setTrend] = useState(fallback.filter(m => m.trending))
   const [active] = useState('Animation')
@@ -45,6 +46,14 @@ export default function Home() {
     const run = async () => {
       const s = q.trim()
       if (!s) {
+        if (view === 'favorites') {
+          setCatalog(favMovies)
+          return
+        }
+        if (view === 'trending') {
+          setCatalog(trend.length ? trend : fallback)
+          return
+        }
         setCatalog(trend.length ? trend : fallback)
         return
       }
@@ -54,7 +63,7 @@ export default function Home() {
       } catch {}
     }
     run()
-  }, [q, trend])
+  }, [q, view, trend, favMovies])
 
   const featured = trend.slice(0, 2)
 

@@ -1,12 +1,15 @@
 import { motion } from 'framer-motion'
 import { Play, Info } from 'lucide-react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { cn } from '@/lib/utils'
 import type { Movie } from '@/types/movie'
+import { useFavorites } from '@/store/favorites'
 
 type Props = { movie: Movie }
 
 export default function Hero({ movie }: Props) {
+  const navigate = useNavigate()
+  const { toggle } = useFavorites()
   return (
     <section className={cn('relative overflow-hidden rounded-xl bg-card')}>      
       <div className={cn('absolute inset-0')}>        
@@ -17,7 +20,7 @@ export default function Hero({ movie }: Props) {
         <h1 className={cn('text-3xl md:text-4xl font-semibold tracking-tight')}>{movie.title}</h1>
         <p className={cn('mt-2 text-sm md:text-base text-muted')}>{movie.overview}</p>
         <div className={cn('mt-6 flex gap-3')}>          
-          <button className={cn('inline-flex items-center gap-2 rounded-full bg-primary px-4 py-2 text-sm text-white shadow-glow transition hover:brightness-110')}>            
+          <button onClick={() => { toggle({ movieId: movie.id, title: movie.title, posterUrl: movie.posterUrl }); navigate(`/movie/${movie.id}`) }} className={cn('inline-flex items-center gap-2 rounded-full bg-primary px-4 py-2 text-sm text-white shadow-glow transition hover:brightness-110')}>            
             <Play className={cn('h-4 w-4')} />
             <span>Watch Now</span>
           </button>
