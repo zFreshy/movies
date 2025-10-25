@@ -31,12 +31,12 @@ export default function ThumbCarousel({ movies, title }: Props) {
   const scroll = (delta: number) => ref.current?.scrollBy({ left: delta, behavior: 'smooth' })
 
   return (
-    <section className={cn('space-y-3')}>      
+    <section className={cn('space-y-3 overflow-x-hidden')}>      
       <h2 className={cn('text-xl md:text-2xl font-semibold tracking-tight')}>{title}</h2>
       <div className={cn('relative')}>        
-        <div ref={ref} className={cn('flex gap-4 overflow-x-auto snap-x snap-mandatory scrollbar-none mask-fade-x')}>          
+        <div ref={ref} className={cn('flex gap-4 overflow-x-auto snap-x snap-mandatory scrollbar-none mask-fade-x pl-2')}>          
           {list.map((m, idx) => (
-            <div key={`${m.id}-${idx}`} className={cn('w-44 shrink-0 snap-start')}>              
+            <div key={`${m.id}-${idx}`} className={cn('w-32 sm:w-44 shrink-0 snap-start')}>              
               <ThumbCard movie={m} />
             </div>
           ))}

@@ -6,7 +6,7 @@ type Props = { movies: Movie[] }
 
 export default function MovieGrid({ movies }: Props) {
   return (
-    <div className={cn('grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-5')}>      
+    <div className={cn('grid grid-cols-[repeat(auto-fill,minmax(120px,1fr))] gap-2 sm:gap-3')}>      
       {movies.map(m => (
         <MovieCard key={m.id} movie={m} />
       ))}

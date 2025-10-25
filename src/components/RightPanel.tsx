@@ -16,7 +16,7 @@ export default function RightPanel({ movies, panelHeight }: Props) {
   const { toggle } = useFavorites()
   const [maxH, setMaxH] = useState<number | undefined>(undefined)
   const list = useMemo(() => {
-    const base = movies
+    const base = movies ?? []
     const s = q.trim().toLowerCase()
     return s ? base.filter(m => m.title.toLowerCase().includes(s)) : base
   }, [movies, q])
@@ -24,7 +24,7 @@ export default function RightPanel({ movies, panelHeight }: Props) {
   useEffect(() => {
     const update = () => {
       const vh = window.innerHeight
-      const cap = Math.max(0, vh - 80)
+      const cap = Math.max(0, vh - 80) // header ~5rem
       const value = panelHeight ? Math.min(panelHeight, cap) : cap
       setMaxH(value)
     }
@@ -34,7 +34,7 @@ export default function RightPanel({ movies, panelHeight }: Props) {
   }, [panelHeight])
 
   return (
-    <aside style={maxH ? { maxHeight: maxH } : undefined} className={cn('block w-full lg:w-[320px] lg:shrink-0')}>      
+    <aside style={maxH ? { height: maxH } : undefined} className={cn('block w-full lg:w-[320px] lg:shrink-0 lg:sticky lg:top-20')}>      
       <div className={cn('h-full flex flex-col gap-3')}>        
         <div className={cn('rounded-3xl bg-background/40 ring-1 ring-white/10 backdrop-blur-xs p-3 shadow-soft')}>          
           <div className={cn('relative')}>            
@@ -48,23 +48,27 @@ export default function RightPanel({ movies, panelHeight }: Props) {
           </div>
         </div>
         <div className={cn('rounded-3xl bg-background/40 ring-1 ring-white/10 backdrop-blur-xs p-3 shadow-soft space-y-2 flex-1 min-h-0 overflow-y-auto')}>          
-          {list.map(m => (
-            <div key={m.id} className={cn('flex items-center gap-3 rounded-xl bg-card/30 ring-1 ring-white/10 p-2')}>              
-              <img src={m.posterUrl} alt={m.title} className={cn('h-12 w-9 rounded-md object-cover')} />
-              <div className={cn('min-w-0 flex-1')}>                
-                <div className={cn('truncate text-sm font-medium')}>{m.title}</div>
-                <div className={cn('text-xs text-muted')}>Favorite</div>
+          {list.length === 0 ? (
+            <div className={cn('text-xs text-muted px-2')}>No favorites yet</div>
+          ) : (
+            list.map(m => (
+              <div key={m.id} className={cn('flex items-center gap-3 rounded-xl bg-card/30 ring-1 ring-white/10 p-2')}>              
+                <img src={m.posterUrl} alt={m.title} className={cn('h-12 w-9 rounded-md object-cover')} />
+                <div className={cn('min-w-0 flex-1')}>                
+                  <div className={cn('truncate text-sm font-medium')}>{m.title}</div>
+                  <div className={cn('text-xs text-muted')}>Favorite</div>
+                </div>
+                <div className={cn('flex items-center gap-2')}>                
+                  <button onClick={() => navigate(`/movie/${m.id}`)} className={cn('inline-flex h-8 w-8 items-center justify-center rounded-full bg-white/10 ring-1 ring-white/10 hover:bg-white/15')} title={'Play'}>                
+                    <Play className={cn('h-4 w-4')} />
+                  </button>
+                  <button onClick={() => toggle({ movieId: m.id, title: m.title, posterUrl: m.posterUrl })} className={cn('inline-flex h-8 w-8 items-center justify-center rounded-full bg-red-500/20 ring-1 ring-white/10 hover:bg-red-500/30')} title={'Remove from favorites'}>
+                    <HeartOff className={cn('h-4 w-4')} />
+                  </button>
+                </div>
               </div>
-              <div className={cn('flex items-center gap-2')}>                
-                <button onClick={() => navigate(`/movie/${m.id}`)} className={cn('inline-flex h-8 w-8 items-center justify-center rounded-full bg-white/10 ring-1 ring-white/10 hover:bg-white/15')} title={'Play'}>                
-                  <Play className={cn('h-4 w-4')} />
-                </button>
-                <button onClick={() => toggle({ movieId: m.id, title: m.title, posterUrl: m.posterUrl })} className={cn('inline-flex h-8 w-8 items-center justify-center rounded-full bg-red-500/20 ring-1 ring-white/10 hover:bg-red-500/30')} title={'Remove from favorites'}>
-                  <HeartOff className={cn('h-4 w-4')} />
-                </button>
-              </div>
-            </div>
-          ))}
+            ))
+          )}
         </div>
       </div>
     </aside>

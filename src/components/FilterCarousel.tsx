@@ -27,10 +27,10 @@ export default function FilterCarousel({ value = 'Animation', onChange }: Props)
           <ChevronRight className={cn('h-4 w-4')} />
         </button>
       </div>
-      <div ref={ref} className={cn('flex gap-3 overflow-x-auto pb-2 snap-x snap-mandatory w-full')}>        
+      <div ref={ref} className={cn('flex gap-3 overflow-x-auto pb-2 snap-x snap-mandatory w-full pl-2 pr-8')}>        
         {items.map(({ key, icon: Icon }) => (
-          <button key={key} onClick={() => onChange?.(key)} className={cn('shrink-0 snap-start inline-flex items-center gap-2 rounded-full px-5 py-3 text-sm ring-1', value === key ? 'bg-white/20 text-foreground ring-white/20 backdrop-blur-xs' : 'bg-background/40 text-foreground/90 ring-white/15 backdrop-blur-xs hover:bg-white/10')}>            
-            <Icon className={cn('h-8 w-8')} />
+          <button key={key} onClick={() => onChange?.(key)} className={cn('shrink-0 snap-start inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm ring-1', value === key ? 'bg-white/20 text-foreground ring-white/20 backdrop-blur-xs' : 'bg-background/40 text-foreground/90 ring-white/15 backdrop-blur-xs')}>            
+            <Icon className={cn('h-6 w-6')} />
             <span>{key}</span>
           </button>
         ))}

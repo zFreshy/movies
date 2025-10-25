@@ -11,7 +11,7 @@ export default function Hero({ movie }: Props) {
   const navigate = useNavigate()
   const { toggle } = useFavorites()
   return (
-    <section className={cn('relative overflow-hidden rounded-xl bg-card')}>      
+    <section className={cn('relative overflow-hidden rounded-xl bg-card h-[220px] md:h-[360px] lg:h-[420px]')}>      
       <div className={cn('absolute inset-0')}>        
         <img src={movie.backdropUrl} alt={movie.title} className={cn('h-full w-full object-cover')} />
         <div className={cn('absolute inset-0 bg-gradient-to-r from-background via-background/70 to-transparent')} />
@@ -20,7 +20,7 @@ export default function Hero({ movie }: Props) {
         <h1 className={cn('text-3xl md:text-4xl font-semibold tracking-tight')}>{movie.title}</h1>
         <p className={cn('mt-2 text-sm md:text-base text-muted')}>{movie.overview}</p>
         <div className={cn('mt-6 flex gap-3')}>          
-          <button onClick={() => { toggle({ movieId: movie.id, title: movie.title, posterUrl: movie.posterUrl }); navigate(`/movie/${movie.id}`) }} className={cn('inline-flex items-center gap-2 rounded-full bg-primary px-4 py-2 text-sm text-white shadow-glow transition hover:brightness-110')}>            
+          <button onClick={() => { toggle({ movieId: movie.id, title: movie.title, posterUrl: movie.posterUrl }); navigate(`/movie/${movie.id}`) }} className={cn('inline-flex items-center gap-2 rounded-full bg-primary px-4 py-2 text-sm text-white shadow-glow transition hover:brightness-110')}>      
             <Play className={cn('h-4 w-4')} />
             <span>Watch Now</span>
           </button>
