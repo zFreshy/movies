@@ -56,6 +56,10 @@ export default function Home() {
           setCatalog(trend.length ? trend : fallback)
           return
         }
+        if (view === 'originals') {
+          setCatalog(fallback)
+          return
+        }
         setCatalog(trend.length ? trend : fallback)
         return
       }
@@ -80,20 +84,25 @@ export default function Home() {
     return catalog.filter(m => (m.genres || []).includes(genre))
   }, [catalog, genre])
 
-  
-
   return (
     <div>
       <div className={cn('grid gap-4 lg:grid-cols-[56px_minmax(0,1fr)_320px]')}>    
         <div className={cn('lg:row-span-2')}><SideRail /></div>
         <div className={cn('space-y-10')}>      
           {featured.length === 2 && null}
-          <h2 className={cn('text-lg font-semibold tracking-tight')}>Developer's Choice</h2>
-          {(trend[0] || catalog[0]) && <Hero movie={(trend[0] || catalog[0])} />}
-          <ThumbCarousel movies={trend} title={'Trending'} />
+          <section id={'discover'}>
+            <h2 className={cn('text-lg font-semibold tracking-tight')}>Developer's Choice</h2>
+            {(trend[0] || catalog[0]) && <Hero movie={(trend[0] || catalog[0])} />}
+          </section>
+          <section id={'trending'}>
+            <ThumbCarousel movies={trend} title={'Trending'} />
+          </section>
+          <section id={'favorites'}>
+            <ThumbCarousel movies={favMovies} title={'My List'} />
+          </section>
         </div>
         <RightPanel movies={favMovies} />
-        <section className={cn('space-y-3 lg:col-span-2 lg:col-start-2 lg:row-start-2')}>        
+        <section id={'catalog'} className={cn('space-y-3 lg:col-span-2 lg:col-start-2 lg:row-start-2')}>        
           <h2 className={cn('text-lg font-semibold tracking-tight')}>Catalog</h2>
           <GenreFilters genres={availableGenres} value={genre} onChange={setGenre} />
           <MovieGrid movies={shown} />

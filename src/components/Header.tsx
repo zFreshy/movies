@@ -4,8 +4,13 @@ import { Search } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 export default function Header() {
-  const tabs = ['Movie', 'Series', 'Originals']
-  const active = 'Movie'
+  const tabs = [
+    { label: 'Discover', key: 'discover' },
+    { label: 'Trending', key: 'trending' },
+    { label: 'My List', key: 'favorites' },
+    { label: 'Catalog', key: 'catalog' },
+  ]
+  const [active, setActive] = useState('discover')
   const [open, setOpen] = useState(false)
   const [query, setQuery] = useState('')
   const inputRef = useRef<HTMLInputElement>(null)
@@ -34,7 +39,23 @@ export default function Header() {
             ) : (
               <>
                 {tabs.map(t => (
-                  <span key={t} className={cn('px-4 py-2 rounded-full', t === active ? 'bg-white/15 text-foreground ring-1 ring-white/10' : 'text-muted hover:bg-white/10')}>{t}</span>
+                  <button
+                    key={t.key}
+                    type={'button'}
+                    onClick={() => {
+                      setActive(t.key)
+                      setOpen(false)
+                      setQuery('')
+                      navigate('/')
+                      setTimeout(() => {
+                        const el = document.getElementById(t.key)
+                        el?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+                      }, 200)
+                    }}
+                    className={cn('px-4 py-2 rounded-full', t.key === active ? 'bg-white/15 text-foreground ring-1 ring-white/10' : 'text-muted hover:bg-white/10')}
+                  >
+                    {t.label}
+                  </button>
                 ))}
               </>
             )}
