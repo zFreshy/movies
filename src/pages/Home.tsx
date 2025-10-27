@@ -97,9 +97,11 @@ export default function Home() {
         <section id={'trending'}>
           <ThumbCarousel movies={trend} title={'Trending'} />
         </section>
-        <section id={'favorites'}>
-          <ThumbCarousel movies={favMovies} title={'My List'} />
-        </section>
+        {favMovies.length > 0 && (
+          <section id={'favorites'}>
+            <ThumbCarousel movies={favMovies} title={'My List'} />
+          </section>
+        )}
         <section id={'catalog'} className={cn('space-y-4 lg:max-w-6xl lg:mx-auto')}>        
           <h2 className={cn('text-lg font-semibold tracking-tight')}>Catalog</h2>
           <GenreFilters genres={availableGenres} value={genre} onChange={setGenre} />
