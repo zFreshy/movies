@@ -1,4 +1,4 @@
-# Filmes — Local Development Guide
+# Flixo — Local Development Guide
 
 A movie catalog app built with React (Vite) that integrates with TMDB for real data and provides a local Express API to persist user favorites in SQLite.
 
