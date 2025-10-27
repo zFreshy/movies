@@ -17,7 +17,7 @@ export const useFavorites = create<State>((set, get) => ({
   load: async () => {
     try {
       const userId = getUserId()
-      const res = await fetch(`${API_BASE}/favorites`, {
+      const res = await fetch(`${API_BASE}/favorites?userId=${encodeURIComponent(userId)}`, {
         headers: { 'X-User-Id': userId }
       })
       const data = await res.json()
@@ -29,7 +29,7 @@ export const useFavorites = create<State>((set, get) => ({
     const userId = getUserId()
     if (exists) {
       try {
-        await fetch(`${API_BASE}/favorites-remove?movieId=${fav.movieId}`, {
+        await fetch(`${API_BASE}/favorites-remove?movieId=${fav.movieId}&userId=${encodeURIComponent(userId)}`, {
           method: 'DELETE',
           headers: { 'X-User-Id': userId }
         })
@@ -38,7 +38,7 @@ export const useFavorites = create<State>((set, get) => ({
       return
     }
     try {
-      await fetch(`${API_BASE}/favorites-add`, {
+      await fetch(`${API_BASE}/favorites-add?userId=${encodeURIComponent(userId)}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'X-User-Id': userId },
         body: JSON.stringify(fav)
