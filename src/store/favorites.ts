@@ -1,4 +1,5 @@
 import { create } from 'zustand'
+import { API_BASE } from '@/lib/api'
 
 type Fav = { movieId: string; title: string; posterUrl: string }
 
@@ -15,7 +16,7 @@ export const useFavorites = create<State>((set, get) => ({
   loaded: false,
   load: async () => {
     try {
-      const res = await fetch('/api/favorites')
+      const res = await fetch(`${API_BASE}/favorites`)
       const data = await res.json()
       set({ items: data, loaded: true })
     } catch {}
@@ -24,13 +25,13 @@ export const useFavorites = create<State>((set, get) => ({
     const exists = get().items.find(i => i.movieId === fav.movieId)
     if (exists) {
       try {
-        await fetch(`/api/favorites/${fav.movieId}`, { method: 'DELETE' })
+        await fetch(`${API_BASE}/favorites-remove?movieId=${fav.movieId}`, { method: 'DELETE' })
         set({ items: get().items.filter(i => i.movieId !== fav.movieId) })
       } catch {}
       return
     }
     try {
-      await fetch('/api/favorites', {
+      await fetch(`${API_BASE}/favorites-add`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(fav)
