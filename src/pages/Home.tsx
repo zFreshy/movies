@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState, useLayoutEffect } from 'react'
 import { cn } from '@/lib/utils'
 import { fetchTrending, searchMovies, fetchDiscover } from '@/lib/tmdb'
 import ThumbCarousel from '@/components/ThumbCarousel'
@@ -37,19 +37,20 @@ export default function Home() {
     run()
   }, [q, view])
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const el = topRef.current
     if (!el) return
     const measure = () => setPanelHeight(el.offsetHeight)
-    measure()
-    const ro = new ResizeObserver(() => measure())
+    const raf = requestAnimationFrame(measure)
+    const ro = new ResizeObserver(measure)
     ro.observe(el)
     window.addEventListener('resize', measure)
     return () => {
+      cancelAnimationFrame(raf)
       ro.disconnect()
       window.removeEventListener('resize', measure)
     }
-  }, [trend, items])
+  }, [])
 
   const favMovies: Movie[] = useMemo(() => {
     const byId = new Map<string, Movie>()
@@ -86,22 +87,29 @@ export default function Home() {
 
   return (
     <div className={cn('flex flex-col lg:flex-row gap-4')}>    
-      <div className={cn('hidden lg:block')}><SideRail /></div>
-      <div className={cn('flex-1 min-w-0', 'space-y-10')} ref={topRef}>
-        {featured.length === 2 && null}
-        <section id={'discover'}>
-          <h2 className={cn('text-lg font-semibold tracking-tight')}>Developer\'s Choice</h2>
-          {(trend[0] || catalog[0]) && <Hero movie={(trend[0] || catalog[0])} />}
-        </section>
-        <section id={'trending'}>
-          <ThumbCarousel movies={trend} title={'Trending'} />
-        </section>
-        {favMovies.length > 0 && (
-          <section id={'favorites'}>
-            <ThumbCarousel movies={favMovies} title={'My List'} />
-          </section>
-        )}
-        <section id={'catalog'} className={cn('space-y-4 lg:max-w-6xl lg:mx-auto')}>        
+      <div className={cn('hidden lg:block sticky top-20 h-fit')}><SideRail /></div>
+      <div className={cn('flex-1 min-w-0 flex flex-col', 'space-y-10')}>
+        <div className={cn('flex flex-row gap-4')}>
+          <div ref={topRef} className={cn('flex-1 min-w-0', 'space-y-10')}>
+            {featured.length === 2 && null}
+            <section id={'discover'}>
+              <h2 className={cn('text-lg font-semibold tracking-tight')}>Developer\'s Choice</h2>
+              {(trend[0] || catalog[0]) && <Hero movie={(trend[0] || catalog[0])} />}
+            </section>
+            <section id={'trending'}>
+              <ThumbCarousel movies={trend} title={'Trending'} />
+            </section>
+            {favMovies.length > 0 && (
+              <section id={'favorites'}>
+                <ThumbCarousel movies={favMovies} title={'My List'} />
+              </section>
+            )}
+          </div>
+          <div className={cn('hidden lg:block')}>
+            <RightPanel movies={favMovies} panelHeight={panelHeight} />
+          </div>
+        </div>
+        <section id={'catalog'} className={cn('space-y-4')}>        
           <h2 className={cn('text-lg font-semibold tracking-tight')}>Catalog</h2>
           <GenreFilters genres={availableGenres} value={genre} onChange={setGenre} />
           <div className={cn('md:hidden')}>            
@@ -111,9 +119,6 @@ export default function Home() {
             <MovieGrid movies={shown} />
           </div>
         </section>
-      </div>
-      <div className={cn('hidden lg:block')}>          
-        <RightPanel movies={favMovies} panelHeight={panelHeight} />
       </div>
     </div>
   )

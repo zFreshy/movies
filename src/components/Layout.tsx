@@ -13,7 +13,7 @@ export default function Layout() {
     <div className={cn('min-h-screen bg-background text-foreground relative')}>      
       <div className={'bg-gradient-blur'} />
       <Header />
-      <main className={cn('container pt-20 pb-24 md:pb-8 overflow-x-hidden')}>        
+      <main className={cn('container pt-20 pb-24 md:pb-8')}>        
         <Outlet />
       </main>
       <MobileActions />
