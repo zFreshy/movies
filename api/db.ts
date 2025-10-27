@@ -4,8 +4,10 @@ import path from 'path'
 
 export type Fav = { movieId: string; title: string; posterUrl: string }
 
-const dbPath = path.resolve(process.cwd(), 'server', 'data', 'favorites.db')
-fs.mkdirSync(path.dirname(dbPath), { recursive: true })
+const isVercel = !!process.env.VERCEL
+const baseDir = isVercel ? path.join('/tmp', 'favorites') : path.resolve(process.cwd(), 'server', 'data')
+const dbPath = path.join(baseDir, 'favorites.db')
+fs.mkdirSync(baseDir, { recursive: true })
 
 const db = new Database(dbPath)
 db.pragma('journal_mode = WAL')

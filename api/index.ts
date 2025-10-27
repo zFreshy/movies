@@ -36,7 +36,6 @@ app.delete('/api/favorites/:movieId', (req, res) => {
   res.json({ ok: true })
 })
 
-const PORT = Number(process.env.PORT ?? 3001)
-app.listen(PORT, () => {
-  console.log(`Favorites API listening on http://localhost:${PORT}`)
-})
+export default (req: any, res: any) => {
+  return (app as any)(req, res)
+}
