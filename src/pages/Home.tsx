@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { cn } from '@/lib/utils'
-import { movies as fallback } from '@/data/movies'
-import { fetchTrending, searchMovies } from '@/lib/tmdb'
+import { fetchTrending, searchMovies, fetchDiscover } from '@/lib/tmdb'
 import ThumbCarousel from '@/components/ThumbCarousel'
 import MovieGrid from '@/components/MovieGrid'
 import { useFavorites } from '@/store/favorites'
@@ -14,8 +13,8 @@ import Carousel from '@/components/Carousel'
 import type { Movie } from '@/types/movie'
 
 export default function Home() {
-  const [trend, setTrend] = useState(fallback)
-  const [catalog, setCatalog] = useState(fallback)
+  const [trend, setTrend] = useState<Movie[]>([])
+  const [catalog, setCatalog] = useState<Movie[]>([])
   const { items } = useFavorites()
   const [panelHeight, setPanelHeight] = useState<number | undefined>(undefined)
   const topRef = useRef<HTMLDivElement>(null)
@@ -31,7 +30,7 @@ export default function Home() {
         setTrend(t)
       } catch {}
       try {
-        const s = q ? await searchMovies(q) : fallback
+        const s = q ? await searchMovies(q) : await fetchDiscover()
         setCatalog(s)
       } catch {}
     }
@@ -54,7 +53,7 @@ export default function Home() {
 
   const favMovies: Movie[] = useMemo(() => {
     const byId = new Map<string, Movie>()
-    ;[...trend, ...catalog, ...fallback].forEach(m => byId.set(m.id, m))
+    ;[...trend, ...catalog].forEach(m => byId.set(m.id, m))
     return items.map(i => {
       const found = byId.get(i.movieId)
       return (
