@@ -27,7 +27,7 @@ async function genreMap() {
 export async function fetchTrending() {
   const data = await req('/trending/movie/week')
   const map = await genreMap()
-  return (data.results ?? []).map((m: any) => ({
+  const base = (data.results ?? []).map((m: any) => ({
     id: String(m.id),
     title: m.title ?? m.original_title ?? m.name ?? 'Untitled',
     year: Number((m.release_date ?? '0000').slice(0, 4)),
@@ -39,12 +39,21 @@ export async function fetchTrending() {
     backdropUrl: img(m.backdrop_path, 'w1280'),
     trending: true,
   }))
+  const filled = await Promise.all(base.map(async (m) => {
+    try {
+      const d = await req(`/movie/${m.id}`)
+      return { ...m, runtimeMin: Number(d.runtime ?? m.runtimeMin ?? 0) }
+    } catch {
+      return m
+    }
+  }))
+  return filled
 }
 
 export async function fetchDiscover() {
   const data = await req('/discover/movie', { sort_by: 'popularity.desc', page: 1 })
   const map = await genreMap()
-  return (data.results ?? []).map((m: any) => ({
+  const base = (data.results ?? []).map((m: any) => ({
     id: String(m.id),
     title: m.title ?? m.original_title ?? m.name ?? 'Untitled',
     year: Number((m.release_date ?? '0000').slice(0, 4)),
@@ -56,12 +65,21 @@ export async function fetchDiscover() {
     backdropUrl: img(m.backdrop_path, 'w1280'),
     trending: false,
   }))
+  const filled = await Promise.all(base.map(async (m) => {
+    try {
+      const d = await req(`/movie/${m.id}`)
+      return { ...m, runtimeMin: Number(d.runtime ?? m.runtimeMin ?? 0) }
+    } catch {
+      return m
+    }
+  }))
+  return filled
 }
 
 export async function searchMovies(q: string) {
   const data = await req('/search/movie', { query: q })
   const map = await genreMap()
-  return (data.results ?? []).map((m: any) => ({
+  const base = (data.results ?? []).map((m: any) => ({
     id: String(m.id),
     title: m.title ?? m.original_title ?? m.name ?? 'Untitled',
     year: Number((m.release_date ?? '0000').slice(0, 4)),
@@ -73,6 +91,15 @@ export async function searchMovies(q: string) {
     backdropUrl: img(m.backdrop_path, 'w1280'),
     trending: false,
   }))
+  const filled = await Promise.all(base.map(async (m) => {
+    try {
+      const d = await req(`/movie/${m.id}`)
+      return { ...m, runtimeMin: Number(d.runtime ?? m.runtimeMin ?? 0) }
+    } catch {
+      return m
+    }
+  }))
+  return filled
 }
 
 export async function fetchMovieDetails(id: string) {
