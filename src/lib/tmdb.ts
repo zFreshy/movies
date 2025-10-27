@@ -29,13 +29,13 @@ export async function fetchTrending() {
   const map = await genreMap()
   return (data.results ?? []).map((m: any) => ({
     id: String(m.id),
-    title: m.title,
+    title: m.title ?? m.original_title ?? m.name ?? 'Untitled',
     year: Number((m.release_date ?? '0000').slice(0, 4)),
     genres: ((m.genre_ids ?? []).map((id: number) => map[id]).filter(Boolean)),
     rating: Number(m.vote_average ?? 0),
     runtimeMin: 0,
     overview: m.overview ?? '',
-    posterUrl: img(m.poster_path, 'w500'),
+    posterUrl: img(m.poster_path, 'w500') || img(m.backdrop_path, 'w500') || '/favicon.svg',
     backdropUrl: img(m.backdrop_path, 'w1280'),
     trending: true,
   }))
@@ -46,13 +46,13 @@ export async function fetchDiscover() {
   const map = await genreMap()
   return (data.results ?? []).map((m: any) => ({
     id: String(m.id),
-    title: m.title,
+    title: m.title ?? m.original_title ?? m.name ?? 'Untitled',
     year: Number((m.release_date ?? '0000').slice(0, 4)),
     genres: ((m.genre_ids ?? []).map((id: number) => map[id]).filter(Boolean)),
     rating: Number(m.vote_average ?? 0),
     runtimeMin: 0,
     overview: m.overview ?? '',
-    posterUrl: img(m.poster_path, 'w500'),
+    posterUrl: img(m.poster_path, 'w500') || img(m.backdrop_path, 'w500') || '/favicon.svg',
     backdropUrl: img(m.backdrop_path, 'w1280'),
     trending: false,
   }))
@@ -63,13 +63,13 @@ export async function searchMovies(q: string) {
   const map = await genreMap()
   return (data.results ?? []).map((m: any) => ({
     id: String(m.id),
-    title: m.title,
+    title: m.title ?? m.original_title ?? m.name ?? 'Untitled',
     year: Number((m.release_date ?? '0000').slice(0, 4)),
     genres: ((m.genre_ids ?? []).map((id: number) => map[id]).filter(Boolean)),
     rating: Number(m.vote_average ?? 0),
     runtimeMin: 0,
     overview: m.overview ?? '',
-    posterUrl: img(m.poster_path, 'w500'),
+    posterUrl: img(m.poster_path, 'w500') || img(m.backdrop_path, 'w500') || '/favicon.svg',
     backdropUrl: img(m.backdrop_path, 'w1280'),
     trending: false,
   }))
@@ -79,13 +79,13 @@ export async function fetchMovieDetails(id: string) {
   const m = await req(`/movie/${id}`)
   return {
     id: String(m.id),
-    title: m.title,
+    title: m.title ?? m.original_title ?? m.name ?? 'Untitled',
     year: Number((m.release_date ?? '0000').slice(0, 4)),
     genres: (m.genres ?? []).map((g: any) => g.name),
     rating: Number(m.vote_average ?? 0),
     runtimeMin: Number(m.runtime ?? 0),
     overview: m.overview ?? '',
-    posterUrl: img(m.poster_path, 'w500'),
+    posterUrl: img(m.poster_path, 'w500') || img(m.backdrop_path, 'w500') || '/favicon.svg',
     backdropUrl: img(m.backdrop_path, 'w1280'),
     trending: false,
   }
