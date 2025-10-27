@@ -4,6 +4,8 @@ import Layout from '@/components/Layout'
 import Home from '@/pages/Home'
 import MovieDetails from '@/pages/MovieDetails'
 import ForYou from './pages/ForYou'
+import { useEffect } from 'react'
+import { useFavorites } from '@/store/favorites'
 
 function AnimatedRoutes() {
   const location = useLocation()
@@ -21,6 +23,10 @@ function AnimatedRoutes() {
 }
 
 export default function App() {
+  const { load, loaded } = useFavorites()
+  useEffect(() => {
+    if (!loaded) load()
+  }, [loaded, load])
   return (
     <BrowserRouter>
       <AnimatedRoutes />
