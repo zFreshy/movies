@@ -41,6 +41,23 @@ export async function fetchTrending() {
   }))
 }
 
+export async function fetchDiscover() {
+  const data = await req('/discover/movie', { sort_by: 'popularity.desc', page: 1 })
+  const map = await genreMap()
+  return (data.results ?? []).map((m: any) => ({
+    id: String(m.id),
+    title: m.title,
+    year: Number((m.release_date ?? '0000').slice(0, 4)),
+    genres: ((m.genre_ids ?? []).map((id: number) => map[id]).filter(Boolean)),
+    rating: Number(m.vote_average ?? 0),
+    runtimeMin: 0,
+    overview: m.overview ?? '',
+    posterUrl: img(m.poster_path, 'w500'),
+    backdropUrl: img(m.backdrop_path, 'w1280'),
+    trending: false,
+  }))
+}
+
 export async function searchMovies(q: string) {
   const data = await req('/search/movie', { query: q })
   const map = await genreMap()

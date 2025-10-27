@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { cn } from '@/lib/utils'
 import { movies as fallback } from '@/data/movies'
-import { fetchTrending, searchMovies } from '@/lib/tmdb'
+import { fetchTrending, searchMovies, fetchDiscover } from '@/lib/tmdb'
 import ThumbCarousel from '@/components/ThumbCarousel'
 import MovieGrid from '@/components/MovieGrid'
 import { useFavorites } from '@/store/favorites'
@@ -31,9 +31,11 @@ export default function Home() {
         setTrend(t)
       } catch {}
       try {
-        const s = q ? await searchMovies(q) : fallback
+        const s = q ? await searchMovies(q) : await fetchDiscover()
         setCatalog(s)
-      } catch {}
+      } catch {
+        setCatalog(fallback)
+      }
     }
     run()
   }, [q, view])
